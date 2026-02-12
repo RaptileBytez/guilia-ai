@@ -3,6 +3,14 @@
 Giulia is a sophisticated, persona-driven AI assistant built on the **Gemini 3 Flash** architecture. She blends high-level project management and coding expertise with a magnetic, "confidante" personality.
 
 ---
+## 🧠 Engineering Highlights
+
+This project serves as a practical application of advanced AI Engineering principles:
+
+* **Modular Prompt Architecture**: Separation of system DNA, few-shot examples, and user templates to ensure maintainability and prevent "prompt spaghetti."
+* **Advanced Memory Management**: Implementation of a stateless JSON-based history manager to maintain context across sessions without heavy database overhead.
+* **Modern Development Workflow**: Built using **uv** for lightning-fast dependency resolution and **Pydantic** for robust data validation.
+* **Persona Persistence**: Engineered using negative constraints and specific formatting wrappers to minimize model drift and repetition.
 
 ## ✨ Features
 
