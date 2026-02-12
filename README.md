@@ -40,6 +40,7 @@ uv sync
 uv run main.py
 
 ## 📂 Project Structure
+```text
 ├── data/
 │   └── chat_history/      # Session JSON files
 ├── prompts/
@@ -51,6 +52,7 @@ uv run main.py
 │   └── prompt_loader.py   # Templating engine
 ├── chatbot.py             # Main Orchestrator
 └── main.py                # Terminal Entry Point
+```
 
 ## 🎭 Persona Philosophy
 Giulia's behavior is governed by a Foundation System Prompt and a Lean User Wrapper.
