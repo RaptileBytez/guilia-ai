@@ -25,5 +25,8 @@ data/chat_history/
 .DS_Store
 Thumbs.db
 
-# uv (Das lock-file sollte eingecheckt werden, aber der cache nicht)
+# uv (Check In lock file but not the cache)
 .uv/
+
+# Asset Management
+*.af
