@@ -1,5 +1,9 @@
 from chatbot import Chatbot
+from utils.logger import Logger
 import os
+
+log = Logger("Guilia-Core")
+log.info("Starting Giulia...")
 
 def main():
     # Clear the terminal for a clean start (optional)
