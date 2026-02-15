@@ -1,0 +1,6 @@
+Identify the following entities from the text delimited by triple backticks
+- Product Name
+- Display Size
+- Camera Resolution
+Format the answer as an unordered list.
+```{text}```

@@ -1,0 +1,3 @@
+Classify the sentiment of the text delimited by triple backticks as positive, negative, or neutral.
+Give your answer as a single word:
+```{text}```

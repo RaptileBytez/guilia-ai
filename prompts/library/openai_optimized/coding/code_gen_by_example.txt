@@ -1,0 +1,2 @@
+You are provided with input-output examples delimited by triple backticks for a python program that receives a list of quarterly sales data. Write code for this program.
+```{examples}```

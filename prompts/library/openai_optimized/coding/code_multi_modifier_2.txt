@@ -1,0 +1,7 @@
+"""Modify the function delimited by triple backticks as follows:
+- Make sure to verify all inputs are positive, otherwise, display an error message for the user.
+- Calculate the area of the rectangle
+- Calculate the perimeter of the rectangle
+- Retun the area, perimeter
+```{function}```
+"""

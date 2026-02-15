@@ -12,7 +12,10 @@ env/
 venv/
 
 # AI / Project specific
-data/chat_history/
+data/**
+!data/
+!data/**/
+!data/**/.gitkeep
 *.log
 
 # Secrets & Config

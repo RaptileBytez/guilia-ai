@@ -1,0 +1,4 @@
+Transform the text delimited by triple backticks with the following two steps:
+Step 1 - Proofread it without changing its structure
+Step 2 - Change the tone to be professional
+```{text}```

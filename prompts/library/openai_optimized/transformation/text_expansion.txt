@@ -1,0 +1,1 @@
+Expand the description for the Social XYZ service delimited by triple backticks to provide an overview of its features and benefits, without bypassing the limit of two sentences. Use a professional tone.```{service_description}```

@@ -1,0 +1,3 @@
+Text: {ticket_1} -> Entities: {entities_1}
+Text: {ticket_2} -> Entities: {entities_2}
+Text: {ticket_3} -> Entities: 

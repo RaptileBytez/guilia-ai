@@ -14,7 +14,8 @@ Giulia is a sophisticated, persona-driven AI assistant built on the **Gemini 3 F
 
 This project serves as a practical application of advanced AI Engineering principles:
 
-* **Modular Prompt Architecture**: Separation of system DNA, few-shot examples, and user templates to ensure maintainability and prevent "prompt spaghetti."
+* **Provider-Pattern Architecture**: Implementation of an AIModelInterface to decouple business logic from specific LLM providers. This allows seamless switching between Gemini, Mock models for testing, or future integrations (e.g., Ollama, OpenAI)
+* **Hierarchical Prompt Management**: Transitioned from a flat file structure to a categorized system (core, tasks, library) to manage model-specific optimizations and research assets.
 * **Advanced Memory Management**: Implementation of a stateless JSON-based history manager to maintain context across sessions without heavy database overhead.
 * **Modern Development Workflow**: Built using **uv** for lightning-fast dependency resolution and **Pydantic** for robust data validation.
 * **Persona Persistence**: Engineered using negative constraints and specific formatting wrappers to minimize model drift and repetition.
@@ -52,22 +53,42 @@ uv sync
 > GEMINI_API_KEY=your_api_key_here
 
 ## Running the Chatbot
+
+Start the standard session:
+```bash
 uv run main.py
+```
+Developer Options
+
+To save API costs during development or UI testing, use the Mock Mode:
+```bash
+uv run main.py --mock
+```
+
+To load a specific session:
+```bash
+uv run main.py --session any_session_from_the_past
+```
 
 ## 📂 Project Structure
 ```text
-├── assets/                # Logos, banner, images
 ├── data/
-│   └── chat_history/      # Session JSON files
-├── prompts/
-│   ├── system_prompts/    # Core personas (Giulia)
-│   ├── templates/         # User message wrappers
-│   └── few_shot_examples/ # "Golden" dialogue examples
+│   ├── chat_history/           # Session JSON files (Git-ignored)
+│   └── logs/                   # Application and API logs (Git-ignored)
+├── prompts/                    # New Hierarchical Structure
+│   ├── core/                   # Identity (Giulia persona, wrappers)
+│   ├── tasks/                  # Active production prompts (categorized)
+│   └── library/                # Research & model-optimized assets (OpenAI, etc.)
 ├── utils/
-│   ├── history_manager.py # Persistence logic
-│   └── prompt_loader.py   # Templating engine
-├── chatbot.py             # Main Orchestrator
-└── main.py                # Terminal Entry Point
+│   ├── ai/                     # AI Core Subpackage
+│   │   ├── __init__.py         # Central exports
+│   │   ├── model_interface.py  # Abstract base classes
+│   │   ├── model_provider.py   # Gemini & Mock implementations
+│   │   ├── prompt_loader.py    # Path-based templating engine
+│   │   └── history_manager.py  # Persistence logic
+│   └── logger.py               # Unified logging system
+├── chatbot.py                  # Refactored Orchestrator using Interface
+└── main.py                     # Entry point with argparse support
 ```
 
 ## 🎭 Persona Philosophy
@@ -80,10 +101,19 @@ Giulia's behavior is governed by a Foundation System Prompt and a Lean User Wrap
 
 ## 👤 About the Author: Raptile Bytez
 
-Behind the pseudonym **Raptile Bytez** (a nod to my DJ roots and a passion for data) is a dedicated **PLM Consultant** with a degree in **Business Information Systems**, currently pivoting into the field of **AI Engineering**.
+Behind the pseudonym **Raptile Bytez** (a nod to my DJ roots and a passion for data) is a seasoned **Enterprise Systems Expert** and **PLM Consultant** with over 15 years of deep-dive experience in the **Oracle Agile e6** ecosystem. 
 
-While my professional background lies in managing complex Product Lifecycle Management systems, I am now focusing on the next frontier of digital transformation: **Applied Artificial Intelligence**.
+With a degree in **Business Information Systems (2009)**, I’ve spent the last decade and a half navigating the complexities of large-scale Product Lifecycle Management. My journey from the rigid, high-stakes world of Enterprise PLM to the fluid frontiers of **AI Engineering** is driven by a simple mission: bringing professional, production-grade stability to Generative AI.
 
+### 🚀 The Mission: Enterprise-Grade AI
+* **Bridging the Gap:** Leveraging 15+ years of system integration and business logic experience to build AI solutions that aren't just "cool demos" but robust tools for real-world business requirements.
+* **Continuous Evolution:** This project is part of my transition through the *DataCamp Associate AI Engineer* track, focusing on the **Google Gemini API** to create modular, scalable alternatives to standard OpenAI solutions.
+* **Legacy meets Future:** I understand how the "old world" of enterprise databases and PLM workflows ticks. My goal is to use AI to augment and transform these systems, ensuring that **AI Engineering** remains a discipline of precision and architectural excellence.
+
+### 🛠️ Tech Expertise & Interests
+* **Enterprise:** Oracle Agile e6, PLM Architecture, System Integration.
+* **AI & Automation:** LLM Orchestration (Gemini, OpenAI), Prompt Engineering, Python.
+* **Philosophy:** Clean Code, Modular Design, and Stateless Architecture.
 ### 🚀 The Mission
 * **Continuous Evolution:** This project is part of my journey through *DataCamp's Associate AI Engineer for Developers Track*. I am specifically exploring the **Google Gemini API** to build robust alternatives to standard OpenAI-based solutions.
 * **Problem Solving at Scale:** My goal is to develop AI systems that solve real-world business problems. I believe that while AI can automate tasks, the **AI Engineer** remains indispensable to bridge the gap between fragmented systems and human requirements.

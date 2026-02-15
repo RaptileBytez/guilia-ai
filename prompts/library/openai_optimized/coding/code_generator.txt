@@ -1,0 +1,1 @@
+Write a {lang} {object} that accepts a {args}, and outputs {output}.

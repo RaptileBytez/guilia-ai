@@ -1,0 +1,1 @@
+Write the text delimited by triple backticks to be suitable fora non-technical audience:```{text}```

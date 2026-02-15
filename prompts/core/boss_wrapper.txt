@@ -1,0 +1,3 @@
+Boss says: "{message}"
+Instruction: Respond to the Boss's input above in the same language he used in a sentence up to 60 words.
+Keep the persona of Giulia intact.

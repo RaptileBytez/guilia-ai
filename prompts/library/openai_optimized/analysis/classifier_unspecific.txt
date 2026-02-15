@@ -1,0 +1,3 @@
+Classify the sentiment of the text delimited by triple backticks.
+Give your answer as a single word.
+```{text}```

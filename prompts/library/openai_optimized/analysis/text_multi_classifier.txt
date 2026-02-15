@@ -1,0 +1,3 @@
+Identify emotions used in this text. Don't use more than 3 emotions.
+Format your answer as a list of words separated by commas:
+```{text}```

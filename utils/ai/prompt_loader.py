@@ -1,107 +1,60 @@
 import os
-import json
+from typing import Optional
 from utils.logger import Logger
 
 log = Logger("PromptLoader")
 
 class PromptLoader:
     """Handles the retrieval and templating of AI prompt files from disk.
-
-    This class serves as a central repository for all text-based assets, 
-    including system instructions, user wrappers, and few-shot examples. 
-    It supports dynamic variable injection using Python's string formatting.
-
-    Attributes:
-        base_path (str): The root directory where prompt folders are located.
+    
+    Now supports a unified, path-based retrieval system that accounts for 
+    model-specific optimizations and hierarchical task structures.
     """
 
-    def __init__(self, base_path="prompts"):
-        """Initializes the loader with a target directory.
-
-        Args:
-            base_path (str): The folder containing 'system_prompts', 'templates', 
-                and 'few_shot_examples'. Defaults to "prompts".
-        """
+    def __init__(self, base_path="prompts", default_model_tag=None):
         self.base_path = base_path
+        self.default_model_tag = default_model_tag
         if not os.path.exists(base_path):
-            log.warning(f"Base path '{base_path}' does not exist. Please ensure your prompt files are in place.")
+            log.warning(f"Base path '{base_path}' does not exist.")
 
-    def get_system_prompt(self, name: str, **variables) -> str:
-        """Retrieves and renders a core system instruction file.
-
-        System prompts define the 'Identity' and 'Persona' of the assistant.
-
+    def get_prompt(self, relative_path: str, model_tag: Optional[str] = None, **kwargs) -> str:
+        """Loads and renders a prompt from the hierarchical structure.
+        
         Args:
-            name (str): The filename (without extension) in 'system_prompts/'.
-            **variables: Arbitrary keyword arguments (e.g., current_time) 
-                to inject into the template's {braces}.
-
-        Returns:
-            str: The fully rendered system instruction string.
+            relative_path (str): Path relative to base_path (e.g., 'core/giulia_assistant').
+            model_tag (str): Optional suffix for model-specific files (e.g., 'gpt4').
+            **kwargs: Variables to inject into the template.
         """
-        # Automatically targets the system_prompts folder
-        path = os.path.join(self.base_path, "system_prompts", f"{name}.txt")
+        tag = model_tag or self.default_model_tag
+        full_path = os.path.join(self.base_path, relative_path)
+        
+        # 1. Check for model-specific version (e.g., path/to/file_gpt4.txt)
+        if tag:
+            specific_file = f"{full_path}_{tag}.txt"
+            if os.path.exists(specific_file):
+                log.debug(f"Loading model-specific prompt: {specific_file}")
+                return self._read_and_format(specific_file, **kwargs)
+
+        # 2. Fallback to default version (e.g., path/to/file.txt)
+        default_file = f"{full_path}.txt"
+        if os.path.exists(default_file):
+            return self._read_and_format(default_file, **kwargs)
+        
+        log.error(f"Prompt file not found: {default_file}")
+        raise FileNotFoundError(f"Could not find prompt at {full_path}")
+
+    def _read_and_format(self, path: str, **kwargs) -> str:
+        """Helper to read file and safely inject variables."""
         try:
             with open(path, "r", encoding="utf-8") as f:
                 template = f.read()
-
-            # This replaces {current_time} etc. with the values you pass in
-            rendered =  template.format(**variables)
-            log.info(f"Loaded system prompt '{name}' with variables: {variables}")
-            return rendered
-        except FileNotFoundError:
-            log.error(f"System prompt file '{path}' not found.")
-            return ""
-        except KeyError as e:
-            log.error(f"Missing variable for system prompt '{name}': {e}")
-            return ""
-
-    def get_template(self, name: str, **kwargs) -> str:
-        """Retrieves and renders a user-turn wrapper template.
-
-        Templates are typically used to wrap raw user input with specific 
-        instructions or constraints before sending to the model.
-
-        Args:
-            name (str): The filename in 'templates/'.
-            **kwargs: Variables to inject (e.g., 'message').
-
-        Returns:
-            str: The rendered template string.
-        """
-        path = os.path.join(self.base_path, "templates", f"{name}.txt")
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                template_content = f.read()
             
-            # .format(**kwargs) maps variables to the {braces} in the file
-            rendered = template_content.format(**kwargs)
-            log.info(f"Rendered template '{name}' with variables: {kwargs}")
+            rendered = template.format(**kwargs)
+            log.info(f"Successfully rendered prompt: {path}")
             return rendered
-        except FileNotFoundError:
-            log.error(f"Template file '{path}' not found.")
-            return ""
         except KeyError as e:
-            log.error(f"Missing variable for template '{name}': {e}")
+            log.error(f"Missing variable {e} in prompt: {path}")
+            return template  # Return raw template as safety fallback
+        except Exception as e:
+            log.error(f"Error reading prompt {path}: {e}")
             return ""
-
-    def get_few_shot(self, name: str):
-        """Loads a set of 'Golden Examples' for few-shot prompting.
-
-        Args:
-            name (str): The filename in 'few_shot_examples/'.
-
-        Returns:
-            list: A list of dictionaries representing 'user' and 'model' turns.
-        """
-        # Targets the few_shot_examples folder and parses JSON
-        path = os.path.join(self.base_path, "few_shot_examples", f"{name}.json")
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            log.info(f"Loaded few-shot examples '{name}' with {len(data)} pairs.")
-            return data
-        except FileNotFoundError:
-            log.error(f"Few-shot example file '{path}' not found.")
-            return []
-        

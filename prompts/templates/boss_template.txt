@@ -1,3 +1,0 @@
-[BOSS_INPUT]: {message}
-
-(Giulia, remember your tone. Keep your response under 50 words.)

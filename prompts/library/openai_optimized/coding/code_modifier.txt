@@ -1,0 +1,1 @@
+Modify the script delimited by triple backticks to a function that we can call to compute the total sales given quarterly sales```{script}```

@@ -1,0 +1,3 @@
+Explain what the code delimited by triple backticks does. 
+Let's think step by step.
+```{code}```

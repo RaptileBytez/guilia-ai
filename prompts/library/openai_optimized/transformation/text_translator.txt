@@ -1,0 +1,2 @@
+Translate the {src_lang} text delimited by triple backticks to {tgt_lang}:
+```{text}```
