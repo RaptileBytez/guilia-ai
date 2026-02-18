@@ -33,3 +33,8 @@ Thumbs.db
 
 # Asset Management
 *.af
+
+# Document Management
+docs/learning_materials/**
+*.docx
+*.xlsx

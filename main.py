@@ -1,5 +1,7 @@
-from utils.ai import GeminiProvider, MockProvider
+import sys
+from utils.ai import GeminiProvider, MockProvider, GPTProvider
 from chatbot import GuiliaChatbot
+from utils.db.factory import DBFactory
 from utils.logger import Logger
 import argparse
 import os
@@ -7,15 +9,28 @@ import os
 log = Logger("Guilia-Core")
 log.info("Starting Giulia...")
 
+def test_db_connection() -> bool:
+    try:
+        db = DBFactory.get_provider(env="BLD", system_type="AGILE_E6")
+        db.execute_query("SELECT 1 FROM DUAL")  # Ein einfacher Test-Query, um die Verbindung zu prüfen
+        log.info("Database connection test successful.")
+        return True
+
+    except Exception as e:
+        log.error(f"Database connection test failed: {e}")
+        return False
+
 def main():
     # Clear the terminal for a clean start (optional)
     os.system('cls' if os.name == 'nt' else 'clear')
-    parser = argparse.ArgumentParser(description="Guilia AI Asistant")
+    parser = argparse.ArgumentParser(description="Giulia AI - Executive Assistant")
     
     parser.add_argument(
-        "--mock",
-        action="store_true",
-        help="Start Giulia in mock mode without API costs."
+        "--model", 
+        type=str, 
+        default="gemini", 
+        choices=["gemini", "openai", "mock"],
+        help="Wähle das KI-Modell (Standard: gemini)"
     )
 
     parser.add_argument(
@@ -26,13 +41,17 @@ def main():
     )
 
     args = parser.parse_args()
-    if args.mock:
-        model = MockProvider()
+    if args.model == "mock":
+        provider = MockProvider()
         log.info("Giulia is running in MOCK mode. No real API calls will be made.")
+    elif args.model == "openai":
+        provider = GPTProvider(model_name="gpt-4o-mini")
+        log.info("Giulia is using OpenAI's GPT-4o-mini model.")
     else:
-        model = GeminiProvider(model_name="gemini-3-flash-preview")
+        provider = GeminiProvider(model_name="gemini-3-flash-preview")
+        log.info("Giulia is using Google's Gemini 3 Flash Preview model.")
     
-    guilia = GuiliaChatbot(session_id=args.session, ai_model=model)
+    guilia = GuiliaChatbot(session_id=args.session, ai_model=provider)
 
     
     print("--- 🍷 Giulia is online ---")
@@ -58,4 +77,9 @@ def main():
         print(f"🍷 Giulia: {reply}\n")
 
 if __name__ == "__main__":
-    main()
+
+    if test_db_connection():
+        main()
+    else:
+        log.error("Giulia cannot start without a database connection. Please check your configuration and try again.")
+        sys.exit(1)
